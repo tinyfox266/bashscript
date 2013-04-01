@@ -1,0 +1,56 @@
+#! /bin/bash
+
+# application in the terminal
+
+target=$1
+
+
+declare -A defaultapp
+
+
+# image file
+defaultapp["bmp"]="eog"
+defaultapp["jpg"]="eog"
+defaultapp["png"]="eog"
+# office file 
+defaultapp["doc"]="libreoffice"
+
+# pdf file
+defaultapp["pdf"]="evince"
+
+# txt file
+defaultapp["txt"]="gedit"
+
+
+# code file
+defaultapp["java"]="vim"
+defaultapp["c"]="vim"
+defaultapp["cpp"]="vim"
+defaultapp["tex"]="vim"
+defaultapp["asm"]="vim"
+defaultapp["sh"]="vim"
+defaultapp["hs"]="vim"
+defaultapp["v"]="emacs"
+
+# media file
+defaultapp["rmvb"]="vlc"
+defaultapp["mkv"]="vlc"
+defaultapp["flv"]="vlc"
+defaultapp["3gp"]="vlc"
+defaultapp["mp3"]="mplayer"
+
+
+for suffix in ${!defaultapp[@]}
+do
+    if [[ "$target" =~ $suffix$ ]]
+    then 
+        if [[ ${defaultapp[$suffix]} =~ ^vim$ ]]
+        then 
+            ${defaultapp[$suffix]} $target ;
+            exit
+        else 
+            ${defaultapp[$suffix]} $target & >& /dev/null ;
+            exit 0;
+        fi
+    fi 
+done
