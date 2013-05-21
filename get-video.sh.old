@@ -4,13 +4,9 @@ flv_web_addr=$1
 flv_dir=$HOME/videos    
 flvcd_page_file=$HOME/tmp/flv_page_file
 
-wget -q -O $flvcd_page_file "http://www.flvcd.com/parse.php?kw=$flv_web_addr"
-flvurls=( $(iconv -f gbk -t utf-8 $flvcd_page_file | sed -n '/下载地址/,/tr/p' | sed -n 's/.*href="\(.*\)" target.*/\1/p') )
-
-#flvtitles=( $(cat $flvcd_page_file | grep "<N>"  | sed -n "s/\s\{1,\}/_/g;s/<N>//gp") )  
-flvtitles=$( iconv -f gbk -t utf-8 $flvcd_page_file | grep document.title | sed -n 's/.*"\(.*\)".*+.*/\1/p')
-
-echo $flvtitles
+wget -q -O $flvcd_page_file "http://www.flvcd.com/parse.php?format=high&kw=$flv_web_addr"
+flvurls=( $(cat $flvcd_page_file | grep "<U>" | sed s/\<U\>//g) )  
+flvtitles=( $(cat $flvcd_page_file | grep "<N>"  | sed -n "s/\s\{1,\}/_/g;s/<N>//gp") )  
 
 
 nr_urls=${#flvurls[@]}
@@ -23,12 +19,11 @@ fi
 
 for ((i=0; i<$nr_urls; i++))
 do
-#    title=${flvtitles[$i]}
-    title=$flvtitles
+    title=${flvtitles[$i]}
     url=${flvurls[$i]}
     echo "title: $title"
     echo "  url: $url"
-    wget -U NoSuchBrowser/1.0 -O "$flv_dir/$title$i.flv" $url
+    wget -U NoSuchBrowser/1.0 -O "$flv_dir/$title.flv" $url
 done
 
 cd $flv_dir
